@@ -1,5 +1,52 @@
 # Beastlife AI Customer Care Automation System
 
+## Setup & Installation
+
+### 1. Prerequisites
+- Python 3.13+ installed.
+
+### 2. Environment Setup
+Create a virtual environment to isolate the project dependencies:
+```bash
+python -m venv .venv
+```
+
+Activate the virtual environment:
+- **Windows:**
+  ```bash
+  .venv\Scripts\activate
+  ```
+- **macOS/Linux:**
+  ```bash
+  source .venv/bin/activate
+  ```
+
+### 3. Install Dependencies
+With the virtual environment active, install the required packages:
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Environment Variables
+Create a `.env` file in the root of the project and add your Google Gemini API key:
+```env
+GEMINI_API_KEY=your_api_key_here
+```
+
+### 5. Running the Prototype
+To start the interactive Streamlit dashboard:
+```bash
+streamlit run app.py
+```
+To run the terminal-based pipeline script:
+```bash
+python prototype_classifier.py
+```
+
+---
+
+## Architecture Overview
+
 ## 1. Query Understanding
 The first stage involves ingesting customer queries across multiple channels (email, chat, tickets) and using Natural Language Processing (NLP) to parse the text, identify intent, and extract relevant entities (e.g., Order ID, Product Name, Customer Name).
 
