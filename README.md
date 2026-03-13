@@ -64,7 +64,7 @@ A modern, scalable cloud-native stack:
 
 - **Data Ingestion Pipeline:** Webhooks from Zendesk/Shopify/Email provider ingested via **AWS API Gateway + Lambda** or **FastAPI**.
 - **NLP Model Choice:** 
-  - *Zero-shot Classification:* Google Gemini Flash API (`gemini-1.5-flash`) for rapid prototyping.
+  - *Zero-shot Classification:* Google Gemini Flash API (`gemini-2.5-flash`) for rapid prototyping.
   - *Production alternative:* Fine-tuned **HuggingFace** model (e.g., `distilbert-base-uncased` fine-tuned on past tickets) for lower latency and cost.
 - **Backend System:** **Python (FastAPI)** for microservices orchestrating the workflow.
 - **Database Structure:** **PostgreSQL** for relational data (Orders, Users, Tickets) and **Redis** for fast cache and rate-limiting.
@@ -92,7 +92,7 @@ import google.generativeai as genai
 
 # Configure the Gemini API
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-2.5-flash')
 
 categories = [
     "Order Tracking", "Delivery Delays", "Refund Requests", 

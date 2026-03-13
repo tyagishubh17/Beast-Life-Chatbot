@@ -4,41 +4,55 @@
 import os
 from collections import Counter
 import pandas as pd
+import google.generativeai as genai
+from dotenv import load_dotenv
 
-# In a real environment, you would use:
-# import google.generativeai as genai
-# model = genai.GenerativeModel('gemini-1.5-flash')
+# Load environment variables from .env
+load_dotenv()
+
+# Configure the Gemini API
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 class SupportAgentMock:
     """
     Mocks the Gemini API setup for classification.
     """
     def __init__(self):
-        self.categories = [
-            "Order Tracking", "Delivery Delays", "Refund Requests", 
-            "Product Complaints", "Subscription Issues", 
-            "Payment Failures", "General Questions"
+        self.categories = ["Order Tracking",
+            "Refund Requests", 
+            "Delivery Delays",
+            "Product Complaints",
+            "Payment Failures",
+            "Subscription Issues",
+            "General Questions"
         ]
         print("SupportAgent initialized with categories:", self.categories)
 
     def classify(self, query: str) -> str:
-        # Mocking LLM behavior using keyword heuristics
-        # In production this would be: return llm.predict(...)
-        q_low = query.lower()
-        if "where" in q_low and ("order" in q_low or "package" in q_low):
-            return "Order Tracking"
-        if "deduct" in q_low or "payment" in q_low or "charged" in q_low:
-            return "Payment Failures"
-        if "refund" in q_low:
-            return "Refund Requests"
-        if "damaged" in q_low or "broken" in q_low or "bad" in q_low:
-            return "Product Complaints"
-        if "late" in q_low or "delay" in q_low:
-            return "Delivery Delays"
-        if "subscribe" in q_low or "subscription" in q_low:
-            return "Subscription Issues"
-        
-        return "General Questions"
+        try:
+            model = genai.GenerativeModel('gemini-2.5-flash')
+
+            prompt = f"""You are an expert customer support routing AI for the brand 'Beastlife'.
+Classify the following customer query into exactly ONE of the following precise categories: 
+{", ".join(self.categories)}
+
+Respond with ONLY the category name. Do not include any other punctuation, conversational text, or prefixes. If it does not strictly match the others, choose "General Questions".
+
+Query: "{query}"
+Category:"""
+            
+            response = model.generate_content(prompt)
+            prediction = response.text.strip()
+            
+            # Fallback verification: Ensure the LLM actually picked a valid category
+            if prediction in self.categories:
+                return prediction
+            else:
+                return "General Questions"
+                
+        except Exception as e:
+            print(f"LLM Classification failed: {e}")
+            return "General Questions"  # Fail gracefully
 
     def execute_automation(self, category: str, extracted_entities: dict):
         print(f"Executing automation for category: [{category}]")
