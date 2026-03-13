@@ -42,6 +42,7 @@ st.subheader("Live Metrics")
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Total Queries Today", len(st.session_state.logs))
 
+
 # Calculate current percentages
 df = pd.DataFrame(st.session_state.logs)
 counts = df['category'].value_counts()
